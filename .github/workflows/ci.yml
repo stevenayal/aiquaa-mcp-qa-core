@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build & test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Validate no tool-specific dependency leaked in
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            const all = { ...pkg.dependencies, ...pkg.devDependencies, ...pkg.peerDependencies };
+            const forbidden = Object.keys(all).filter((name) =>
+              /playwright|newman|postman|jmeter|hurl|k6|selenium|appium/i.test(name)
+            );
+            if (forbidden.length > 0) {
+              console.error('Forbidden tool-specific dependency found:', forbidden);
+              process.exit(1);
+            }
+            console.log('No forbidden tool-specific dependencies.');
+          "
+
+      - name: Validate subpath exports resolve
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            const fs = require('node:fs');
+            for (const [key, value] of Object.entries(pkg.exports)) {
+              if (key === './package.json') continue;
+              const target = typeof value === 'string' ? value : value.import;
+              if (!fs.existsSync(target)) {
+                console.error('Missing export target for', key, '->', target);
+                process.exit(1);
+              }
+            }
+            console.log('All export targets exist.');
+          "
+
+      - name: npm pack
+        run: npm pack
+
+      - name: Install packed tarball into a throwaway project and smoke-test every subpath
+        run: |
+          set -e
+          PACKAGE_FILE=$(ls aiquaa-mcp-qa-core-*.tgz)
+          mkdir -p /tmp/pack-smoke-test
+          cp "$PACKAGE_FILE" /tmp/pack-smoke-test/
+          cd /tmp/pack-smoke-test
+          npm init -y >/dev/null
+          npm install "./$PACKAGE_FILE" zod
+          cat > smoke.mjs <<'EOF'
+          import { createQaCore, createDefaultConfig } from "@aiquaa/mcp-qa-core";
+          import "@aiquaa/mcp-qa-core/coverage";
+          import "@aiquaa/mcp-qa-core/traceability";
+          import "@aiquaa/mcp-qa-core/changes";
+          import "@aiquaa/mcp-qa-core/patches";
+          import "@aiquaa/mcp-qa-core/repository";
+          import "@aiquaa/mcp-qa-core/github";
+          import "@aiquaa/mcp-qa-core/aiquaa";
+          import "@aiquaa/mcp-qa-core/codegraph";
+          import "@aiquaa/mcp-qa-core/memory";
+          import "@aiquaa/mcp-qa-core/security";
+          import "@aiquaa/mcp-qa-core/mcp";
+          import "@aiquaa/mcp-qa-core/testing";
+
+          const qaCore = createQaCore({ config: createDefaultConfig() });
+          const [req] = qaCore.requirements.normalize([{ title: "T", description: "D" }]);
+          if (!req.id) throw new Error("normalize() did not return a requirement id");
+          console.log("Packed tarball smoke test OK");
+          EOF
+          node smoke.mjs
+
+      - name: Dependency audit
+        run: npm audit --omit=dev

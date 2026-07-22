@@ -1,0 +1,13 @@
+export { InMemoryFileSystemAdapter } from "./in-memory-filesystem.adapter.js";
+export { InMemoryRepositoryAdapter } from "./in-memory-repository.adapter.js";
+export type { InMemoryRepositoryAdapterOptions } from "./in-memory-repository.adapter.js";
+export { InMemoryPullRequestAdapter } from "./in-memory-pull-request.adapter.js";
+export type { InMemoryPullRequestAdapterOptions } from "./in-memory-pull-request.adapter.js";
+export { InMemoryAiquaaAdapter } from "../infrastructure/aiquaa/in-memory-aiquaa.adapter.js";
+export type { InMemoryAiquaaState } from "../infrastructure/aiquaa/in-memory-aiquaa.adapter.js";
+export { InMemoryProjectMemoryAdapter } from "../infrastructure/engram/in-memory-project-memory.adapter.js";
+export { NoopProjectMemoryAdapter } from "../infrastructure/engram/noop-project-memory.adapter.js";
+export { TestLoggerAdapter } from "./test-logger.adapter.js";
+export type { TestLogEntry } from "./test-logger.adapter.js";
+export { createQaCoreTestHarness } from "./qa-core-test-harness.js";
+export type { QaCoreTestHarness, QaCoreTestHarnessOptions } from "./qa-core-test-harness.js";

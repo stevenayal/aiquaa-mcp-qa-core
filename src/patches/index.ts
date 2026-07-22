@@ -1,0 +1,11 @@
+export type { FileChange, FileChangeOperation, FilePatch, FilePatchOperation, PatchSummary } from "./types.js";
+export { diffLines, splitLinesKeepEnds } from "./line-diff.js";
+export type { DiffOp, DiffOpType } from "./line-diff.js";
+export { generateUnifiedDiff, buildUnifiedDiffBody, applyUnifiedDiff } from "./unified-diff.js";
+export type { UnifiedDiffOptions } from "./unified-diff.js";
+export { PatchGenerator } from "./patch-generator.js";
+export { PatchValidator } from "./patch-validator.js";
+export type { PatchValidationIssue, PatchValidationResult, PatchValidatorOptions } from "./patch-validator.js";
+export { PatchApplier } from "./patch-applier.js";
+export type { FileReader, FileWriter } from "./patch-applier.js";
+export { summarizePatch, detectUnexpectedDeletions, detectOutOfScopeChanges } from "./summarize.js";

@@ -1,0 +1,138 @@
+{
+  "name": "@aiquaa/mcp-qa-core",
+  "version": "0.1.0",
+  "description": "Reusable hexagonal-architecture core for AIQUAA QA MCP servers: requirements, traceability, coverage, change planning, patches, security and GitHub/AIQUAA/CodeGraph/Engram adapters.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "qa",
+    "testing",
+    "traceability",
+    "coverage",
+    "aiquaa",
+    "hexagonal-architecture"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevenayal/aiquaa-mcp-qa-core.git"
+  },
+  "homepage": "https://github.com/stevenayal/aiquaa-mcp-qa-core#readme",
+  "bugs": {
+    "url": "https://github.com/stevenayal/aiquaa-mcp-qa-core/issues"
+  },
+  "license": "MIT",
+  "author": "AIQUAA",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./requirements": {
+      "types": "./dist/requirements/index.d.ts",
+      "import": "./dist/requirements/index.js"
+    },
+    "./coverage": {
+      "types": "./dist/coverage/index.d.ts",
+      "import": "./dist/coverage/index.js"
+    },
+    "./traceability": {
+      "types": "./dist/traceability/index.d.ts",
+      "import": "./dist/traceability/index.js"
+    },
+    "./changes": {
+      "types": "./dist/changes/index.d.ts",
+      "import": "./dist/changes/index.js"
+    },
+    "./patches": {
+      "types": "./dist/patches/index.d.ts",
+      "import": "./dist/patches/index.js"
+    },
+    "./repository": {
+      "types": "./dist/repository/index.d.ts",
+      "import": "./dist/repository/index.js"
+    },
+    "./github": {
+      "types": "./dist/github/index.d.ts",
+      "import": "./dist/github/index.js"
+    },
+    "./aiquaa": {
+      "types": "./dist/aiquaa/index.d.ts",
+      "import": "./dist/aiquaa/index.js"
+    },
+    "./codegraph": {
+      "types": "./dist/codegraph/index.d.ts",
+      "import": "./dist/codegraph/index.js"
+    },
+    "./memory": {
+      "types": "./dist/memory/index.d.ts",
+      "import": "./dist/memory/index.js"
+    },
+    "./security": {
+      "types": "./dist/security/index.d.ts",
+      "import": "./dist/security/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp/index.d.ts",
+      "import": "./dist/mcp/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "import": "./dist/testing/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "ARCHITECTURE.md",
+    "MIGRATION.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc -p tsconfig.typecheck.json",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run typecheck && npm run lint && npm run test:coverage && npm run build",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "@octokit/rest": ">=20.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@octokit/rest": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@octokit/rest": "^21.0.2",
+    "@types/node": "^22.19.19",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^8.57.1",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
